@@ -1,0 +1,16 @@
+[package]
+authors = ["hanabi1224 <harlowmoo@gmail.com>"]
+description = "variant config"
+edition = "2018"
+license = "MIT"
+name = "variant-config"
+repository = "https://github.com/hanabi1224/VariantConfig"
+version = "0.1.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cranelift = "0.72"
+cranelift-jit = "0.72"
+cranelift-module = "0.72"
+peg = "0.6"
