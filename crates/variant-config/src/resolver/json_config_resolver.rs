@@ -1,4 +1,4 @@
-use crate::dsl::{ContextValue, FnJitter};
+use crate::dsl::{FnJitter, VariantValue};
 use anyhow;
 use hashbrown::HashMap;
 use serde_json::Value;
@@ -10,7 +10,7 @@ struct NodeCandidateResolver {
 }
 
 impl NodeCandidateResolver {
-    pub fn new(index: usize, on: &str) -> anyhow::Result<NodeCandidateResolver> {
+    pub fn new(index: usize, on: &str) -> anyhow::Result<Self> {
         let jitter = FnJitter::new(on)?;
         Ok(Self {
             index,
@@ -27,15 +27,15 @@ pub struct JsonConfigResolver {
 }
 
 impl JsonConfigResolver {
-    pub fn new(json: &str) -> anyhow::Result<JsonConfigResolver> {
+    pub fn new(json: Value) -> anyhow::Result<JsonConfigResolver> {
         Self::new_with_custom_path(json, "if".to_owned(), "value".to_owned())
     }
 
     pub fn new_with_custom_path(
-        json: &str,
+        json: Value,
         condition_path: String,
         value_path: String,
-    ) -> anyhow::Result<JsonConfigResolver> {
+    ) -> anyhow::Result<Self> {
         let mut r = Self {
             condition_path,
             value_path,
@@ -46,7 +46,7 @@ impl JsonConfigResolver {
         Ok(r)
     }
 
-    pub fn resolve(&self, ctx: &HashMap<String, ContextValue>) -> Value {
+    pub fn resolve(&self, ctx: &HashMap<String, VariantValue>) -> Value {
         let mut ret = self.json.clone();
         if self.node_resolvers.len() > 0 {
             for (path, resolvers) in self.node_resolvers.iter().rev() {
@@ -68,8 +68,7 @@ impl JsonConfigResolver {
         ret
     }
 
-    fn set_json(&mut self, json: &str) -> anyhow::Result<()> {
-        let json: Value = serde_json::from_str(json)?;
+    fn set_json(&mut self, json: Value) -> anyhow::Result<()> {
         let mut path = Vec::new();
         self.parse_variants(&json, &mut path)?;
         self.json = json;
@@ -90,9 +89,26 @@ impl JsonConfigResolver {
                     for (idx, item) in vec.iter().enumerate() {
                         if is_variant_array {
                             let value = item.get(&self.value_path).unwrap();
-                            if let Some(Value::String(on)) = item.get(&self.condition_path) {
-                                let r = NodeCandidateResolver::new(idx, &on)?;
-                                node_resolvers.push(r);
+                            if let Some(v) = item.get(&self.condition_path) {
+                                match v {
+                                    Value::String(on) => {
+                                        let r = NodeCandidateResolver::new(idx, &on)?;
+                                        node_resolvers.push(r);
+                                    }
+                                    Value::Null => {
+                                        let r = NodeCandidateResolver::new(idx, "1")?;
+                                        node_resolvers.push(r);
+                                    }
+                                    Value::Bool(true) => {
+                                        let r = NodeCandidateResolver::new(idx, "1")?;
+                                        node_resolvers.push(r);
+                                    }
+                                    Value::Number(n) => {
+                                        let r = NodeCandidateResolver::new(idx, &n.to_string())?;
+                                        node_resolvers.push(r);
+                                    }
+                                    _ => {}
+                                }
                             }
 
                             path.push(format!("{}", idx));
@@ -126,9 +142,9 @@ impl JsonConfigResolver {
 
     fn is_variant_array(&self, v: &Value) -> bool {
         if v.is_object() {
-            if let Some(Value::String(_)) = v.get(&self.condition_path) {
-                if let Some(_) = v.get(&self.value_path) {
-                    return true;
+            if let Some(_) = v.get(&self.value_path) {
+                if let Some(c) = v.get(&self.condition_path) {
+                    return !c.is_array() && !c.is_object();
                 }
             }
         }
