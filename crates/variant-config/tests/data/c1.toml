@@ -1,0 +1,35 @@
+p1 = 1
+p2 = [
+  2,
+  3,
+  4,
+]
+
+[[p3]]
+if = 'VAR1 > 10'
+
+[p3.value]
+p4 = 'p41'
+
+[[p3.value.p5]]
+if = "VAR2=='what'"
+value = 'what'
+
+[[p3.value.p5]]
+if = "VAR2=='why'"
+value = 'why'
+
+[[p3.value.p5]]
+if = "VAR2=='how'"
+value = 'how'
+
+[[p3.value.p5]]
+if = 'true'
+value = ''
+
+[[p3]]
+if = 1
+
+[p3.value]
+p4 = 'p42'
+p5 = 'no'

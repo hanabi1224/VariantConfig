@@ -8,19 +8,81 @@ mod tests {
     fn test_no_variant_1() {
         let json = json!({
             "a":1,
-            "b":2
-        })
-        .to_string();
-        let resolver = JsonConfigResolver::new(&json).unwrap();
+            "b":3
+        });
+        let resolver = JsonConfigResolver::new(json.clone()).unwrap();
         let ctx = HashMap::new();
         let r = resolver.resolve(&ctx);
-        assert_eq!(r.to_string(), json);
+        assert_eq!(r, json);
+    }
+
+    #[test]
+    fn test_condition_non_str_1() {
+        let json = json!({
+            "a": [
+                {
+                    "if": Value::Null,
+                    "value": 1
+                },
+            ]
+        });
+        let resolver = JsonConfigResolver::new(json.clone()).unwrap();
+        let ctx = HashMap::new();
+        let r = resolver.resolve(&ctx);
+        assert_eq!(
+            r,
+            json!({
+                "a":1,
+            })
+        );
+    }
+
+    #[test]
+    fn test_condition_non_str_2() {
+        let json = json!({
+            "a": [
+                {
+                    "if": true,
+                    "value": 1
+                },
+            ]
+        });
+        let resolver = JsonConfigResolver::new(json.clone()).unwrap();
+        let ctx = HashMap::new();
+        let r = resolver.resolve(&ctx);
+        assert_eq!(
+            r,
+            json!({
+                "a":1,
+            })
+        );
+    }
+
+    #[test]
+    fn test_condition_non_str_3() {
+        let json = json!({
+            "a": [
+                {
+                    "if": 1,
+                    "value": 1
+                },
+            ]
+        });
+        let resolver = JsonConfigResolver::new(json.clone()).unwrap();
+        let ctx = HashMap::new();
+        let r = resolver.resolve(&ctx);
+        assert_eq!(
+            r,
+            json!({
+                "a":1,
+            })
+        );
     }
 
     #[test]
     fn test_variant_1() {
         let json = json!({
-            "a":1,
+            "a": [1,2],
             "b": [
                 {
                     "if": "a > 5",
@@ -35,41 +97,37 @@ mod tests {
                     "value": 0
                 },
             ]
-        })
-        .to_string();
-        let resolver = JsonConfigResolver::new(&json).unwrap();
+        });
+        let resolver = JsonConfigResolver::new(json.clone()).unwrap();
         let mut ctx = HashMap::new();
-        ctx.insert("a".to_owned(), ContextValue::Int(6));
+        ctx.insert("a".to_owned(), VariantValue::Int(6));
         let r = resolver.resolve(&ctx);
         assert_eq!(
-            r.to_string(),
+            r,
             json!({
-                "a":1,
+                "a":[1,2],
                 "b":5,
             })
-            .to_string()
         );
 
-        ctx.insert("a".to_owned(), ContextValue::Int(4));
+        ctx.insert("a".to_owned(), VariantValue::Int(4));
         let r = resolver.resolve(&ctx);
         assert_eq!(
-            r.to_string(),
+            r,
             json!({
-                "a":1,
+                "a":[1,2],
                 "b":3,
             })
-            .to_string()
         );
 
-        ctx.insert("a".to_owned(), ContextValue::Int(1));
+        ctx.insert("a".to_owned(), VariantValue::Int(1));
         let r = resolver.resolve(&ctx);
         assert_eq!(
-            r.to_string(),
+            r,
             json!({
-                "a":1,
+                "a":[1,2],
                 "b":0,
             })
-            .to_string()
         );
     }
 
@@ -97,7 +155,7 @@ mod tests {
                     "value": 3
                 },
                 {
-                    "if": "true",
+                    "if": true,
                     "value": {
                         "c": 7,
                         "d": [{
@@ -111,15 +169,14 @@ mod tests {
                     }
                 },
             ]
-        })
-        .to_string();
-        let resolver = JsonConfigResolver::new(&json).unwrap();
+        });
+        let resolver = JsonConfigResolver::new(json.clone()).unwrap();
         let mut ctx = HashMap::new();
-        ctx.insert("a".to_owned(), ContextValue::Int(6));
-        ctx.insert("b".to_owned(), ContextValue::String("what".to_owned()));
+        ctx.insert("a".to_owned(), VariantValue::Int(6));
+        ctx.insert("b".to_owned(), VariantValue::String("what".to_owned()));
         let r = resolver.resolve(&ctx);
         assert_eq!(
-            r.to_string(),
+            r,
             json!({
                 "a":1,
                 "b":{
@@ -127,14 +184,13 @@ mod tests {
                     "d":8
                 },
             })
-            .to_string()
         );
 
-        ctx.insert("a".to_owned(), ContextValue::Int(6));
-        ctx.insert("b".to_owned(), ContextValue::String("no".to_owned()));
+        ctx.insert("a".to_owned(), VariantValue::Int(6));
+        ctx.insert("b".to_owned(), VariantValue::String("no".to_owned()));
         let r = resolver.resolve(&ctx);
         assert_eq!(
-            r.to_string(),
+            r,
             json!({
                 "a":1,
                 "b":{
@@ -142,25 +198,23 @@ mod tests {
                     "d":6
                 },
             })
-            .to_string()
         );
 
-        ctx.insert("a".to_owned(), ContextValue::Int(4));
-        ctx.insert("b".to_owned(), ContextValue::Int(4));
+        ctx.insert("a".to_owned(), VariantValue::Int(4));
+        ctx.insert("b".to_owned(), VariantValue::Int(4));
         let r = resolver.resolve(&ctx);
         assert_eq!(
-            r.to_string(),
+            r,
             json!({
                 "a":1,
                 "b":3,
             })
-            .to_string()
         );
 
-        ctx.insert("a".to_owned(), ContextValue::Int(1));
+        ctx.insert("a".to_owned(), VariantValue::Int(1));
         let r = resolver.resolve(&ctx);
         assert_eq!(
-            r.to_string(),
+            r,
             json!({
                 "a":1,
                 "b": {
@@ -168,14 +222,13 @@ mod tests {
                     "d":-1,
                 },
             })
-            .to_string()
         );
 
-        ctx.insert("a".to_owned(), ContextValue::Int(1));
-        ctx.insert("b".to_owned(), ContextValue::String("".to_owned()));
+        ctx.insert("a".to_owned(), VariantValue::Int(1));
+        ctx.insert("b".to_owned(), VariantValue::String("".to_owned()));
         let r = resolver.resolve(&ctx);
         assert_eq!(
-            r.to_string(),
+            r,
             json!({
                 "a":1,
                 "b": {
@@ -183,14 +236,13 @@ mod tests {
                     "d":-3,
                 },
             })
-            .to_string()
         );
 
-        ctx.insert("a".to_owned(), ContextValue::Int(1));
-        ctx.insert("b".to_owned(), ContextValue::String("no".to_owned()));
+        ctx.insert("a".to_owned(), VariantValue::Int(1));
+        ctx.insert("b".to_owned(), VariantValue::String("no".to_owned()));
         let r = resolver.resolve(&ctx);
         assert_eq!(
-            r.to_string(),
+            r,
             json!({
                 "a":1,
                 "b": {
@@ -198,7 +250,6 @@ mod tests {
                     "d":-1,
                 },
             })
-            .to_string()
         );
     }
 }

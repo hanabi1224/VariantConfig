@@ -1,6 +1,7 @@
 pub mod fn_translator;
 mod frontend;
 mod utils;
+mod variant_value;
 
 use ahash::RandomState;
 use anyhow;
@@ -11,7 +12,7 @@ use fn_translator::*;
 use frontend::*;
 use hashbrown::HashMap;
 use std::mem;
-use utils::get_string_hash;
+pub use variant_value::*;
 
 const N_PARAMS: usize = 20;
 // TODO: Use macro instead
@@ -40,23 +41,6 @@ pub type FnSignature = fn(
 pub const BOOL: Type = types::B1;
 pub const INT: Type = types::I64;
 
-pub enum ContextValue {
-    Int(i64),
-    Bool(bool),
-    String(String),
-}
-
-impl ContextValue {
-    pub fn to_i64(&self, random_state: &RandomState) -> i64 {
-        match self {
-            Self::Int(i) => *i,
-            Self::Bool(true) => 1,
-            Self::Bool(false) => 0,
-            Self::String(s) => get_string_hash(random_state, s),
-        }
-    }
-}
-
 pub struct FnJitter {
     module: JITModule,
     random_state: RandomState,
@@ -65,7 +49,7 @@ pub struct FnJitter {
 }
 
 impl FnJitter {
-    pub fn new(input: &str) -> anyhow::Result<FnJitter> {
+    pub fn new(input: &str) -> anyhow::Result<Self> {
         let builder = JITBuilder::new(cranelift_module::default_libcall_names());
         let mut module = JITModule::new(builder);
         let mut ctx = module.make_context();
@@ -83,7 +67,7 @@ impl FnJitter {
         })
     }
 
-    pub fn evaluate(&self, params: &HashMap<String, ContextValue>) -> bool {
+    pub fn evaluate(&self, params: &HashMap<String, VariantValue>) -> bool {
         let mut a: [i64; N_PARAMS] = [0; N_PARAMS];
         for (k, idx) in &self.params {
             if let Some(v) = params.get(k) {
