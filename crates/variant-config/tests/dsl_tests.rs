@@ -7,7 +7,8 @@ mod tests {
     fn test_str_1() {
         let mut ctx = HashMap::new();
         ctx.insert("a".to_owned(), VariantValue::String("what".to_owned()));
-        const CODE: &str = "a == 'what'";
+        ctx.insert("b".to_owned(), VariantValue::Bool(true));
+        const CODE: &str = "a == 'what' and b";
         let jitter = FnJitter::new(CODE).unwrap();
         let ret = jitter.evaluate(&ctx);
         assert_eq!(ret, true);
@@ -17,7 +18,8 @@ mod tests {
     fn test_str_2() {
         let mut ctx = HashMap::new();
         ctx.insert("a".to_owned(), VariantValue::String("no".to_owned()));
-        const CODE: &str = "a == 'what'";
+        ctx.insert("b".to_owned(), VariantValue::Bool(false));
+        const CODE: &str = "a == 'what' or b";
         let jitter = FnJitter::new(CODE).unwrap();
         let ret = jitter.evaluate(&ctx);
         assert_eq!(ret, false);

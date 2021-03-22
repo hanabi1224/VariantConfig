@@ -36,8 +36,37 @@ mod tests {
         let fp = "tests/data/c1.json";
         let contents = fs::read_to_string(fp).unwrap();
         let json = serde_json::from_str(&contents).unwrap();
-        let store = VariantConfigStore::new(json, HashMap::new()).unwrap();
+        let mut global_variants = HashMap::new();
+        global_variants.insert("Dummy".to_owned(), VariantValue::Bool(false));
+        global_variants.insert("VAR1".to_owned(), VariantValue::Bool(true));
+        global_variants.insert("VAR2".to_owned(), VariantValue::Bool(false));
+        let mut store = VariantConfigStore::new(json, global_variants).unwrap();
         test_resolve_config(&store);
+
+        let updated = contents.replace("VAR1 > 10", "true");
+        let json: serde_json::Value = serde_json::from_str(&updated).unwrap();
+        store.update_json(json.clone()).unwrap();
+        let mut variants = HashMap::new();
+        variants.insert("VAR1".to_owned(), VariantValue::Int(10));
+        variants.insert("VAR2".to_owned(), VariantValue::String("why".to_owned()));
+        let config = store.resolve_typed::<Config>(&variants).unwrap();
+        let mut expected = Config::expected_base();
+        expected.p3.p4 = "p41".to_owned();
+        expected.p3.p5 = "why".to_owned();
+        assert_eq!(config, expected);
+
+        store.update_global_variants(HashMap::with_capacity(0));
+        store
+            .update_json_with_config(json.clone(), &VariantConfigStoreConfig::default())
+            .unwrap();
+        let mut variants = HashMap::new();
+        variants.insert("VAR1".to_owned(), VariantValue::Int(10));
+        variants.insert("VAR2".to_owned(), VariantValue::String("why".to_owned()));
+        let config = store.resolve_typed::<Config>(&variants).unwrap();
+        let mut expected = Config::expected_base();
+        expected.p3.p4 = "p41".to_owned();
+        expected.p3.p5 = "why".to_owned();
+        assert_eq!(config, expected);
     }
 
     #[test]
