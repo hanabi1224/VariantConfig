@@ -21,3 +21,4 @@ comment:
 
 ignore:
   - "tests"
+  - "crates/variant-config/tests"
