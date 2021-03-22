@@ -2,13 +2,14 @@ pub mod fn_translator;
 mod frontend;
 mod utils;
 
+use ahash::RandomState;
+use anyhow;
 use cranelift::prelude::*;
 use cranelift_jit::{JITBuilder, JITModule};
 use cranelift_module::{Linkage, Module};
 use fn_translator::*;
 use frontend::*;
-use std::collections::hash_map::RandomState;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 use std::mem;
 use utils::get_string_hash;
 
@@ -39,13 +40,13 @@ pub type FnSignature = fn(
 pub const BOOL: Type = types::B1;
 pub const INT: Type = types::I64;
 
-pub enum ParameterValue {
+pub enum ContextValue {
     Int(i64),
     Bool(bool),
     String(String),
 }
 
-impl ParameterValue {
+impl ContextValue {
     pub fn to_i64(&self, random_state: &RandomState) -> i64 {
         match self {
             Self::Int(i) => *i,
@@ -64,13 +65,16 @@ pub struct FnJitter {
 }
 
 impl FnJitter {
-    pub fn new(input: &str) -> Result<FnJitter, String> {
+    pub fn new(input: &str) -> anyhow::Result<FnJitter> {
         let builder = JITBuilder::new(cranelift_module::default_libcall_names());
         let mut module = JITModule::new(builder);
         let mut ctx = module.make_context();
         let random_state = RandomState::new();
         let mut params = HashMap::with_capacity(N_PARAMS);
-        let fn_ptr = Self::compile(input, &mut module, &mut ctx, &random_state, &mut params)?;
+        let fn_ptr = Self::compile(input, &mut module, &mut ctx, &random_state, &mut params)
+            .map_err(|e| {
+                anyhow::anyhow!(format!("Unable to parse condition `{}` :{}", input, e))
+            })?;
         Ok(Self {
             module,
             random_state,
@@ -79,7 +83,7 @@ impl FnJitter {
         })
     }
 
-    pub fn evaluate(&self, params: &HashMap<String, ParameterValue>) -> bool {
+    pub fn evaluate(&self, params: &HashMap<String, ContextValue>) -> bool {
         let mut a: [i64; N_PARAMS] = [0; N_PARAMS];
         for (k, idx) in &self.params {
             if let Some(v) = params.get(k) {
@@ -99,8 +103,8 @@ impl FnJitter {
         ctx: &mut codegen::Context,
         random_state: &RandomState,
         params: &mut HashMap<String, Variable>,
-    ) -> Result<*const u8, String> {
-        let stmts = parser::statements(&input).map_err(|e| e.to_string())?;
+    ) -> anyhow::Result<*const u8> {
+        let stmts = parser::statements(&input).map_err(|e| e)?;
         for _ in 0..N_PARAMS {
             ctx.func.signature.params.push(AbiParam::new(INT));
         }
@@ -124,10 +128,10 @@ impl FnJitter {
 
         let id = module
             .declare_function("fn", Linkage::Export, &ctx.func.signature)
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| e)?;
         module
             .define_function(id, ctx, &mut codegen::binemit::NullTrapSink {})
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| e)?;
         module.clear_context(ctx);
         module.finalize_definitions();
         let code = module.get_finalized_function(id);

@@ -1,9 +1,10 @@
 use super::frontend::*;
 use super::utils::get_string_hash;
+use super::HashMap;
+use super::RandomState;
 use super::{BOOL, INT};
+use anyhow::bail;
 use cranelift::prelude::*;
-use std::collections::hash_map::RandomState;
-use std::collections::HashMap;
 
 pub struct ValueWrapper {
     pub value: Value,
@@ -53,21 +54,21 @@ impl<'a> FunctionTranslator<'a> {
         }
     }
 
-    fn translate_expr_bool(&mut self, expr: Expr) -> Result<ValueWrapper, String> {
+    fn translate_expr_bool(&mut self, expr: Expr) -> anyhow::Result<ValueWrapper> {
         let ret = self.translate_expr(expr)?;
         Ok(self.convert_int_to_bool(ret))
     }
 
-    fn translate_expr_int(&mut self, expr: Box<Expr>) -> Result<ValueWrapper, String> {
+    fn translate_expr_int(&mut self, expr: Box<Expr>) -> anyhow::Result<ValueWrapper> {
         let v = self.translate_expr(*expr)?;
         if v.r#type != INT {
-            Err(format!("Invalid type {}", v.r#type))
+            bail!(format!("Invalid type {}", v.r#type))
         } else {
             Ok(v)
         }
     }
 
-    pub fn translate_expr(&mut self, expr: Expr) -> Result<ValueWrapper, String> {
+    pub fn translate_expr(&mut self, expr: Expr) -> anyhow::Result<ValueWrapper> {
         match expr {
             Expr::IntLiteral(literal) => Ok(ValueWrapper::new(
                 self.builder.ins().iconst(INT, literal),
@@ -177,7 +178,7 @@ impl<'a> FunctionTranslator<'a> {
         cmp: IntCC,
         lhs: Box<Expr>,
         rhs: Box<Expr>,
-    ) -> Result<ValueWrapper, String> {
+    ) -> anyhow::Result<ValueWrapper> {
         match cmp {
             IntCC::Equal | IntCC::NotEqual => {
                 let lhs = self.translate_expr(*lhs)?;

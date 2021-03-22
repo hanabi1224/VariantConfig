@@ -1,4 +1,4 @@
-use std::collections::hash_map::RandomState;
+use super::RandomState;
 use std::hash::{BuildHasher, Hasher};
 
 pub fn get_string_hash(random_state: &RandomState, s: &str) -> i64 {
