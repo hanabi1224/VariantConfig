@@ -22,4 +22,5 @@ comment:
 ignore:
   - "tests"
   - "crates/variant-config/tests"
+  - "crates/variant-config/src/bin"
   - "example"

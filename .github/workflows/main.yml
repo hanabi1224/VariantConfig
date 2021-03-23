@@ -32,3 +32,8 @@ jobs:
         run: cargo build --all-features --release --workspace --exclude web-example
       - name: Test
         run: cargo test --all-features --release --workspace --exclude web-example
+      - name: Bench
+        run: |
+          pushd crates/variant-config
+          cargo run --release --all-features --bin bencher
+          popd
