@@ -5,6 +5,7 @@ use actix_web::*;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    println!("Open http://localhost:8080/ in browser.");
     HttpServer::new(|| {
         App::new()
             .route("/convert/", web::post().to(convert_api::convert))
