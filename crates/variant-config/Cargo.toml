@@ -17,6 +17,7 @@ cranelift-jit = "0.72"
 cranelift-module = "0.72"
 crossbeam-channel = "0"
 hashbrown = "0"
+log = "0"
 # notify = "5.0.0-pre.6"
 peg = "0.6"
 # protobuf = {version = "2", features = ["with-bytes"]}
@@ -30,3 +31,6 @@ bson = "1"
 
 [build-dependencies]
 # protobuf-codegen-pure = "2"
+
+[lib]
+crate-type = ["lib", "cdylib"]

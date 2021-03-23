@@ -1,0 +1,23 @@
+[package]
+authors = ["hanabi1224 <harlowmoo@gmail.com>"]
+edition = "2018"
+name = "variant-config-web-example"
+publish = false
+version = "0.1.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-files = "0"
+actix-web = "3"
+anyhow = "1"
+hashbrown = "0"
+openssl = {version = "0", features = ["v110"]}
+serde = "1"
+serde_json = "1"
+variant-config = {path = "../crates/variant-config"}
+
+[dev-dependencies]
+
+[build-dependencies]
+anyhow = "1"

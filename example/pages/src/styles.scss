@@ -1,0 +1,15 @@
+$bgColor: #21252a;
+$fontColor: #fff;
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: $bgColor;
+    text-size-adjust: auto;
+    -webkit-text-size-adjust: auto;
+
+    color: $fontColor;
+
+    // background-image: url(./assets/images/scroll_back.png);
+}
