@@ -2,9 +2,9 @@ name: main
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 env:
   CARGO_TERM_COLOR: always
 jobs:
@@ -12,17 +12,23 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-#         os: [ubuntu-latest, windows-latest, macos-latest]
+        # os: [ubuntu-latest, windows-latest, macos-latest]
         os: [ubuntu-latest]
     steps:
-    - name: Install latest stable
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-        override: true
-        components: rustfmt, clippy
-    - uses: actions/checkout@v2
-    - name: Build
-      run: cargo build --all-features --release
-    - name: Test
-      run: cargo test --all-features --release
+      - name: Install latest stable
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
+      - uses: actions/checkout@v2
+      - name: Build example web
+        run: |
+          pushd example/pages
+          yarn
+          yarn build
+          popd
+      - name: Build
+        run: cargo build --all-features --release
+      - name: Test
+        run: cargo test --all-features --release
