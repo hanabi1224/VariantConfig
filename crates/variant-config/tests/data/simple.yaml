@@ -1,0 +1,8 @@
+a: 1
+b:
+  - if: VAR1 && VAR2
+    value: 1
+  - if: VAR1 || VAR2
+    value: 2
+  - if 1:
+      value: 0
