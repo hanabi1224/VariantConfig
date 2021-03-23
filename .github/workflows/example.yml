@@ -1,4 +1,4 @@
-name: main
+name: example
 
 on:
   push:
@@ -28,7 +28,14 @@ jobs:
           override: true
           components: rustfmt, clippy
       - uses: actions/checkout@v2
-      - name: Build
-        run: cargo build --all-features --release --workspace --exclude web-example
-      - name: Test
-        run: cargo test --all-features --release --workspace --exclude web-example
+      - name: Build example web
+        run: |
+          pushd example/pages
+          yarn
+          yarn build
+          popd
+      - name: Build example
+        run: |
+          pushd example
+          cargo build --release
+          popd
