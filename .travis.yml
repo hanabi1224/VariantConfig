@@ -18,7 +18,7 @@ install:
   - rustup component add llvm-tools-preview
   - export RUSTFLAGS="-Zinstrument-coverage"
 script:
-  - cargo build --all-features
-  - LLVM_PROFILE_FILE="hanabi1224-%p-%m.profraw" cargo test --all-features
+  - cargo build --all-features --workspace --exclude web-example
+  - LLVM_PROFILE_FILE="hanabi1224-%p-%m.profraw" cargo test --all-features --workspace --exclude web-example
   - ./grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info
   - bash <(curl -s https://codecov.io/bash) -f lcov.info

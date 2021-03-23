@@ -1,4 +1,4 @@
-name: main
+name: example
 
 on:
   push:
@@ -21,6 +21,12 @@ jobs:
           path: |
             ~/.cargo/registry
           key: ${{ runner.os }}-cargo
+      - name: Cache cargo build targets
+        uses: actions/cache@v2
+        with:
+          path: |
+            target
+          key: ${{ runner.os }}-cargo-build-target
       - name: Install latest stable
         uses: actions-rs/toolchain@v1
         with:
@@ -28,7 +34,14 @@ jobs:
           override: true
           components: rustfmt, clippy
       - uses: actions/checkout@v2
-      - name: Build
-        run: cargo build --all-features --release --workspace --exclude web-example
-      - name: Test
-        run: cargo test --all-features --release --workspace --exclude web-example
+      - name: Build example web
+        run: |
+          pushd example/pages
+          yarn
+          yarn build
+          popd
+      - name: Build example
+        run: |
+          pushd example
+          cargo build --release
+          popd
