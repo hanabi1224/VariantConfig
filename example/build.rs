@@ -1,6 +1,7 @@
 use anyhow;
 use std::process::Command;
 
+// https://doc.rust-lang.org/cargo/reference/environment-variables.html
 fn main() -> anyhow::Result<()> {
     let cwd = "pages";
     #[cfg(not(windows))]
