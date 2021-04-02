@@ -1,0 +1,6 @@
+node_modules
+dist
+.cache
+.parcel-cache
+.vercel
+api/target

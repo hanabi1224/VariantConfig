@@ -1,12 +1,12 @@
 {
-  "name": "pages",
+  "name": "variant-config-demo",
   "version": "1.0.0",
   "license": "MIT",
-  "main": "index.js",
   "private": true,
   "scripts": {
     "start": "parcel src/index.html --open",
     "build": "parcel build src/index.html --no-source-maps",
+    "vercel-build": "parcel build src/index.html --no-source-maps",
     "lint": "yarn eslint src/ --ext .ts,.js,.vue",
     "lint-fix": "yarn eslint --fix src/ --ext .ts,.js,.vue"
   },
@@ -20,15 +20,16 @@
     "vue-property-decorator": "^9.1.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.10",
+    "@babel/core": "^7.13.14",
+    "@babel/preset-env": "^7.13.12",
     "@types/body-scroll-lock": "^2.6.1",
     "@types/codemirror": "^0.0.108",
     "@types/lodash": "^4.14.168",
-    "@types/node": "^14.14.35",
-    "@typescript-eslint/eslint-plugin": "^4.19.0",
-    "@typescript-eslint/parser": "^4.19.0",
+    "@types/node": "^14.14.37",
+    "@typescript-eslint/eslint-plugin": "^4.20.0",
+    "@typescript-eslint/parser": "^4.20.0",
     "@vue/component-compiler-utils": "^3.2.0",
-    "eslint": "^7.22.0",
+    "eslint": "^7.23.0",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^7.8.0",
     "parcel-bundler": "^1.12.5",

@@ -1,5 +1,7 @@
 [workspace]
+exclude = []
 members = [
   "example",
   "crates/variant-config",
+  "example/pages/api",
 ]
