@@ -116,7 +116,7 @@ export default class AppPage extends Vue {
 
     async convert() {
         let text = this.editor.getValue();
-        let r = await axios.post('/convert/', {
+        let r = await axios.post('/api/convert/', {
             type_: this.mode,
             content: text,
             variants: this.variantsEditor.getValue(),
