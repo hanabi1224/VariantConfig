@@ -2,12 +2,17 @@ pub mod dsl;
 mod resolver;
 mod vc_config;
 
+pub use anyhow;
 pub use dsl::VariantValue;
+pub use hashbrown;
 use hashbrown::HashMap;
+pub use log;
 pub use resolver::*;
 use serde::de::DeserializeOwned;
-use serde_json;
+pub use serde_json;
+pub use serde_yaml;
 use std::sync::Arc;
+pub use toml;
 pub use vc_config::*;
 
 pub struct VariantConfigStore {
