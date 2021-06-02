@@ -60,7 +60,7 @@ impl FnJitter {
                 anyhow::anyhow!(format!("Unable to parse condition `{}` :{}", input, e))
             })?;
         Ok(Self {
-            module,
+            module: module,
             random_state,
             params,
             func: unsafe { mem::transmute::<_, FnSignature>(fn_ptr) },
@@ -114,17 +114,20 @@ impl FnJitter {
             .declare_function("fn", Linkage::Export, &ctx.func.signature)
             .map_err(|e| e)?;
         module
-            .define_function(id, ctx, &mut codegen::binemit::NullTrapSink {})
+            .define_function(
+                id,
+                ctx,
+                &mut codegen::binemit::NullTrapSink {},
+                &mut codegen::binemit::NullStackMapSink {},
+            )
             .map_err(|e| e)?;
         module.clear_context(ctx);
         module.finalize_definitions();
         let code = module.get_finalized_function(id);
         Ok(code)
     }
-}
 
-impl Drop for FnJitter {
-    fn drop(&mut self) {
-        unsafe { self.module.free_memory() };
+    pub unsafe fn free_memory(self) {
+        self.module.free_memory();
     }
 }

@@ -2,6 +2,7 @@ use crate::dsl::{FnJitter, VariantValue};
 use anyhow;
 use hashbrown::HashMap;
 use serde_json::Value;
+use std::cell::RefCell;
 use std::collections::BTreeMap;
 
 struct NodeCandidateResolver {
@@ -17,13 +18,17 @@ impl NodeCandidateResolver {
             condition: jitter,
         })
     }
+
+    pub unsafe fn free_memory(self) {
+        self.condition.free_memory();
+    }
 }
 
 pub struct JsonConfigResolver {
     condition_path: String,
     value_path: String,
     json: Value,
-    node_resolvers: BTreeMap<String, Vec<NodeCandidateResolver>>,
+    node_resolvers: BTreeMap<String, RefCell<Vec<NodeCandidateResolver>>>,
 }
 
 impl JsonConfigResolver {
@@ -52,7 +57,7 @@ impl JsonConfigResolver {
             for (path, resolvers) in self.node_resolvers.iter().rev() {
                 if let Some(ptr_mut) = ret.pointer_mut(path) {
                     let mut match_value = Value::Null;
-                    for resolver in resolvers {
+                    for resolver in resolvers.borrow().iter() {
                         if resolver.condition.evaluate(ctx) {
                             let k = format!("/{}/{}", resolver.index, self.value_path);
                             if let Some(v) = ptr_mut.pointer(&k) {
@@ -124,7 +129,7 @@ impl JsonConfigResolver {
                     }
                     if is_variant_array {
                         self.node_resolvers
-                            .insert(merge_json_path(path), node_resolvers);
+                            .insert(merge_json_path(path), RefCell::new(node_resolvers));
                     }
                 }
             }
@@ -149,6 +154,24 @@ impl JsonConfigResolver {
             }
         }
         return false;
+    }
+
+    fn get_keys(&self) -> Vec<String> {
+        self.node_resolvers.keys().cloned().collect()
+    }
+}
+
+impl Drop for JsonConfigResolver {
+    fn drop(&mut self) {
+        for k in self.get_keys() {
+            if let Some(v) = self.node_resolvers.remove(&k) {
+                let mut vec = v.borrow_mut();
+                while vec.len() > 0 {
+                    let r = vec.remove(0);
+                    unsafe { r.free_memory() };
+                }
+            }
+        }
     }
 }
 

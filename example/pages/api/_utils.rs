@@ -1,6 +1,5 @@
-use hashbrown::HashMap;
 use serde::{Deserialize, Serialize};
-use variant_config::*;
+use variant_config::{hashbrown::HashMap, *};
 use vercel_lambda::{error::VercelError, Body, IntoResponse, Request, Response};
 
 pub fn convert_handler(request: Request) -> Result<impl IntoResponse, VercelError> {

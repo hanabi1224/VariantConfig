@@ -1,7 +1,6 @@
 use actix_web::*;
-use hashbrown::HashMap;
 use serde::{Deserialize, Serialize};
-use variant_config::*;
+use variant_config::{hashbrown::HashMap, *};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ConvertPayload {

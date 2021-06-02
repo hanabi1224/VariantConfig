@@ -8,14 +8,9 @@ version = "0.1.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1"
-hashbrown = "0"
 http = "0"
 lambda_runtime = "0"
 serde = "1"
-serde_json = "1"
-serde_yaml = "0"
-toml = "0"
 variant-config = "0"
 # variant-config = {path = "../../../crates/variant-config"}
 vercel_lambda = "0"
