@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
-    use hashbrown::HashMap;
     use variant_config::dsl::{FnJitter, VariantValue};
+    use variant_config::hashbrown::HashMap;
 
     #[test]
     fn test_str_1() {
