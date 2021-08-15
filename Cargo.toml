@@ -5,3 +5,4 @@ members = [
   "crates/variant-config",
   "example/pages/api",
 ]
+resolver = "2"

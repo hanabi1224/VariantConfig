@@ -41,16 +41,16 @@ impl<'a> FunctionTranslator<'a> {
 
     pub fn convert_int_to_bool(&mut self, v: ValueWrapper) -> ValueWrapper {
         if v.r#type == BOOL {
-            return v;
+            v
         } else {
             let return_true = self.builder.ins().bconst(BOOL, true);
             let return_false = self.builder.ins().bconst(BOOL, false);
-            return ValueWrapper::new(
+            ValueWrapper::new(
                 self.builder
                     .ins()
                     .select(v.value, return_true, return_false),
                 BOOL,
-            );
+            )
         }
     }
 

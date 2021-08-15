@@ -60,7 +60,7 @@ impl FnJitter {
                 anyhow::anyhow!(format!("Unable to parse condition `{}` :{}", input, e))
             })?;
         Ok(Self {
-            module: module,
+            module,
             random_state,
             params,
             func: unsafe { mem::transmute::<_, FnSignature>(fn_ptr) },

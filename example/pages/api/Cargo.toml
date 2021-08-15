@@ -10,7 +10,7 @@ version = "0.1.0"
 [dependencies]
 http = "0"
 lambda_runtime = "0"
-serde = "1"
+serde = {version = "1", features = ["derive"]}
 variant-config = "0"
 # variant-config = {path = "../../../crates/variant-config"}
 vercel_lambda = "0"

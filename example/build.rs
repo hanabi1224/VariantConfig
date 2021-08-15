@@ -1,4 +1,3 @@
-use anyhow;
 use std::process::Command;
 
 // https://doc.rust-lang.org/cargo/reference/environment-variables.html

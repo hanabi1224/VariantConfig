@@ -1,5 +1,4 @@
 use crate::dsl::{FnJitter, VariantValue};
-use anyhow;
 use hashbrown::HashMap;
 use serde_json::Value;
 use std::cell::RefCell;

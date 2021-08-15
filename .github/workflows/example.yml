@@ -40,8 +40,4 @@ jobs:
           yarn
           yarn build
           popd
-      - name: Build example
-        run: |
-          pushd example
-          cargo build --release
-          popd
+      - run: cargo build --release -p web-example

@@ -28,12 +28,8 @@ jobs:
           toolchain: stable
           override: true
           components: rustfmt, clippy
-      - name: Build
-        run: cargo build --all-features --release --workspace --exclude web-example
-      - name: Test
-        run: cargo test --all-features --release --workspace --exclude web-example
-      - name: Bench
-        run: |
-          pushd crates/variant-config
-          cargo run --release --all-features --bin bencher
-          popd
+      - run: cargo build --all-features --release -p variant-config
+      - run: cargo test --all-features --release -p variant-config
+      - run: rustup update nightly
+      - run: cargo +nightly bench --all-features -p variant-config
+      - run: cargo fmt --all -- --check

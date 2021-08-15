@@ -10,8 +10,8 @@ version = "0.1.0"
 [dependencies]
 actix-files = "0"
 actix-web = "3"
-openssl = {version = "0", features = ["v110"]}
-serde = "1"
+# openssl = "0"
+serde = {version = "1", features = ["derive"]}
 variant-config = {path = "../crates/variant-config"}
 
 [dev-dependencies]
