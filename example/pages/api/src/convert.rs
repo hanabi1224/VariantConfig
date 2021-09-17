@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use variant_config::{hashbrown::HashMap, *};
-use vercel_lambda::{error::VercelError, Body, IntoResponse, Request, Response};
+use vercel_lambda::{error::VercelError, *};
 
 pub fn convert_handler(request: Request) -> Result<impl IntoResponse, VercelError> {
     let body = request.into_body();
@@ -82,4 +82,8 @@ pub struct ConvertPayload {
     pub variants: String,
     pub content: String,
     pub type_: String,
+}
+
+pub fn main() -> Result<(), Box<dyn std::error::Error>> {
+    Ok(lambda!(convert_handler))
 }

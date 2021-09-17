@@ -1,6 +1,7 @@
 [package]
 authors = ["hanabi1224 <harlowmoo@gmail.com>"]
 edition = "2018"
+license = "MIT"
 name = "web-example"
 publish = false
 version = "0.1.0"
