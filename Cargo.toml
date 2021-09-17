@@ -4,5 +4,6 @@ members = [
   "example",
   "crates/variant-config",
   "example/pages/api",
+  "example/pages/api/api-rs",
 ]
 resolver = "2"

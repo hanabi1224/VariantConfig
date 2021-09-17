@@ -1,19 +1,21 @@
 [package]
-authors = ["hanabi1224 <harlowmoo@gmail.com>"]
-edition = "2018"
 name = "variant-config-demo-vercel-api"
-publish = false
 version = "0.1.0"
+
+license = "MIT"
+publish = false
+
+edition = "2018"
+resolver = "2"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-http = "0"
-lambda_runtime = "0"
-serde = {version = "1", features = ["derive"]}
-variant-config = "0"
+api-rs = {path = "api-rs"}
+# serde = {version = "1", features = ["derive"]}
+# variant-config = "0"
 # variant-config = {path = "../../../crates/variant-config"}
-vercel_lambda = "0"
+# vercel_lambda = "0"
 
 [dev-dependencies]
 
