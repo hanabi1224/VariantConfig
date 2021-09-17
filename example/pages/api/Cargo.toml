@@ -11,9 +11,11 @@ resolver = "2"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow = "1"
+reqwest = "0"
 serde = {version = "1", features = ["derive"]}
 variant-config = "0"
-vercel_lambda = "0"
+vercel_lambda = {git = "https://github.com/hanabi1224/rust", branch = "update_lambda_runtime_deps"}
 
 [dev-dependencies]
 

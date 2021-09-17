@@ -1,8 +1,6 @@
-use serde::{Deserialize, Serialize};
-use variant_config::{hashbrown::HashMap, *};
-use vercel_lambda::{error::VercelError, *};
+use super::*;
 
-pub fn convert_handler(request: Request) -> Result<impl IntoResponse, VercelError> {
+fn convert_handler(request: Request) -> Result<impl IntoResponse, VercelError> {
     let body = request.into_body();
     let ret_txt = match body {
         Body::Empty => "empty body".to_owned(),
@@ -78,7 +76,7 @@ fn process_convert_payload(payload_str: &str) -> Result<String, anyhow::Error> {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ConvertPayload {
+struct ConvertPayload {
     pub variants: String,
     pub content: String,
     pub type_: String,
