@@ -33,3 +33,31 @@ jobs:
       - run: rustup update nightly
       - run: cargo +nightly bench --all-features -p variant-config
       - run: cargo fmt --all -- --check
+  codecov:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+          components: llvm-tools-preview
+      - run: curl -L https://github.com/mozilla/grcov/releases/latest/download/grcov-linux-x86_64.tar.bz2 | tar jxf -
+      - name: Run code coverage
+        env:
+          RUSTFLAGS: -Zinstrument-coverage
+          LLVM_PROFILE_FILE: coverage-%p-%m.profraw
+        run: |
+          cargo test --all-features --workspace --exclude web-example
+          ./grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info
+      - uses: actions/upload-artifact@v2
+        with:
+          name: lcov.info
+          path: lcov.info
+          if-no-files-found: error
+      - name: Upload to codecov
+        run: |
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          chmod +x codecov
+          ./codecov -f lcov.info -Z
