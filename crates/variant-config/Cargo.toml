@@ -1,7 +1,6 @@
 [package]
-authors = ["hanabi1224 <harlowmoo@gmail.com>"]
 description = "variant config"
-edition = "2018"
+edition = "2021"
 license = "MIT"
 name = "variant-config"
 repository = "https://github.com/hanabi1224/VariantConfig"
@@ -11,21 +10,21 @@ version = "0.1.4"
 [features]
 
 [dependencies]
-ahash = "0"
+ahash = "0.7"
 anyhow = "1"
-cranelift = "0"
-cranelift-jit = "0"
-cranelift-module = "0"
-crossbeam-channel = "0"
-hashbrown = "0"
-log = "0"
+cranelift = "0.78"
+cranelift-jit = "0.78"
+cranelift-module = "0.78"
+crossbeam-channel = "0.5"
+hashbrown = "0.11"
+log = "0.4"
 # notify = "5.0.0-pre.6"
-peg = "0"
+peg = "0.7"
 # protobuf = {version = "2", features = ["with-bytes"]}
 serde = {version = "1", features = ["derive"]}
 serde_json = "1"
-serde_yaml = "0"
-toml = "0"
+serde_yaml = "0.8"
+toml = "0.5"
 
 [dev-dependencies]
 # bson = "1"
