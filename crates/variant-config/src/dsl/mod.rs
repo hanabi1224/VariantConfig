@@ -88,7 +88,7 @@ impl FnJitter {
         random_state: &RandomState,
         params: &mut HashMap<String, Variable>,
     ) -> anyhow::Result<*const u8> {
-        let stmts = parser::statements(&input).map_err(|e| e)?;
+        let stmts = parser::statements(input).map_err(|e| e)?;
         for _ in 0..N_PARAMS {
             ctx.func.signature.params.push(AbiParam::new(INT));
         }
@@ -127,7 +127,7 @@ impl FnJitter {
         Ok(code)
     }
 
-    pub unsafe fn free_memory(self) {
+    pub(crate) unsafe fn free_memory(self) {
         self.module.free_memory();
     }
 }

@@ -59,8 +59,8 @@ impl<'a> FunctionTranslator<'a> {
         Ok(self.convert_int_to_bool(ret))
     }
 
-    fn translate_expr_int(&mut self, expr: Box<Expr>) -> anyhow::Result<ValueWrapper> {
-        let v = self.translate_expr(*expr)?;
+    fn translate_expr_int(&mut self, expr: Expr) -> anyhow::Result<ValueWrapper> {
+        let v = self.translate_expr(expr)?;
         if v.r#type != INT {
             bail!(format!("Invalid type {}", v.r#type))
         } else {
@@ -89,8 +89,8 @@ impl<'a> FunctionTranslator<'a> {
             }
 
             Expr::Add(lhs, rhs) => {
-                let lhs = self.translate_expr_int(lhs)?;
-                let rhs = self.translate_expr_int(rhs)?;
+                let lhs = self.translate_expr_int(*lhs)?;
+                let rhs = self.translate_expr_int(*rhs)?;
                 Ok(ValueWrapper::new(
                     self.builder.ins().iadd(lhs.value, rhs.value),
                     INT,
@@ -98,8 +98,8 @@ impl<'a> FunctionTranslator<'a> {
             }
 
             Expr::Sub(lhs, rhs) => {
-                let lhs = self.translate_expr_int(lhs)?;
-                let rhs = self.translate_expr_int(rhs)?;
+                let lhs = self.translate_expr_int(*lhs)?;
+                let rhs = self.translate_expr_int(*rhs)?;
                 Ok(ValueWrapper::new(
                     self.builder.ins().isub(lhs.value, rhs.value),
                     INT,
@@ -107,8 +107,8 @@ impl<'a> FunctionTranslator<'a> {
             }
 
             Expr::Mul(lhs, rhs) => {
-                let lhs = self.translate_expr_int(lhs)?;
-                let rhs = self.translate_expr_int(rhs)?;
+                let lhs = self.translate_expr_int(*lhs)?;
+                let rhs = self.translate_expr_int(*rhs)?;
                 Ok(ValueWrapper::new(
                     self.builder.ins().imul(lhs.value, rhs.value),
                     INT,
@@ -116,8 +116,8 @@ impl<'a> FunctionTranslator<'a> {
             }
 
             Expr::Div(lhs, rhs) => {
-                let lhs = self.translate_expr_int(lhs)?;
-                let rhs = self.translate_expr_int(rhs)?;
+                let lhs = self.translate_expr_int(*lhs)?;
+                let rhs = self.translate_expr_int(*rhs)?;
                 Ok(ValueWrapper::new(
                     self.builder.ins().sdiv(lhs.value, rhs.value),
                     INT,
@@ -125,8 +125,8 @@ impl<'a> FunctionTranslator<'a> {
             }
 
             Expr::Mod(lhs, rhs) => {
-                let lhs = self.translate_expr_int(lhs)?;
-                let rhs = self.translate_expr_int(rhs)?;
+                let lhs = self.translate_expr_int(*lhs)?;
+                let rhs = self.translate_expr_int(*rhs)?;
                 Ok(ValueWrapper::new(
                     self.builder.ins().srem(lhs.value, rhs.value),
                     INT,
@@ -151,12 +151,12 @@ impl<'a> FunctionTranslator<'a> {
                 ))
             }
 
-            Expr::Eq(lhs, rhs) => self.translate_icmp(IntCC::Equal, lhs, rhs),
-            Expr::Ne(lhs, rhs) => self.translate_icmp(IntCC::NotEqual, lhs, rhs),
-            Expr::Lt(lhs, rhs) => self.translate_icmp(IntCC::SignedLessThan, lhs, rhs),
-            Expr::Le(lhs, rhs) => self.translate_icmp(IntCC::SignedLessThanOrEqual, lhs, rhs),
-            Expr::Gt(lhs, rhs) => self.translate_icmp(IntCC::SignedGreaterThan, lhs, rhs),
-            Expr::Ge(lhs, rhs) => self.translate_icmp(IntCC::SignedGreaterThanOrEqual, lhs, rhs),
+            Expr::Eq(lhs, rhs) => self.translate_icmp(IntCC::Equal, *lhs, *rhs),
+            Expr::Ne(lhs, rhs) => self.translate_icmp(IntCC::NotEqual, *lhs, *rhs),
+            Expr::Lt(lhs, rhs) => self.translate_icmp(IntCC::SignedLessThan, *lhs, *rhs),
+            Expr::Le(lhs, rhs) => self.translate_icmp(IntCC::SignedLessThanOrEqual, *lhs, *rhs),
+            Expr::Gt(lhs, rhs) => self.translate_icmp(IntCC::SignedGreaterThan, *lhs, *rhs),
+            Expr::Ge(lhs, rhs) => self.translate_icmp(IntCC::SignedGreaterThanOrEqual, *lhs, *rhs),
             Expr::Identifier(name) => {
                 if let Some(&variable) = self.variables.get(&name) {
                     Ok(ValueWrapper::new(self.builder.use_var(variable), INT))
@@ -173,16 +173,11 @@ impl<'a> FunctionTranslator<'a> {
         }
     }
 
-    fn translate_icmp(
-        &mut self,
-        cmp: IntCC,
-        lhs: Box<Expr>,
-        rhs: Box<Expr>,
-    ) -> anyhow::Result<ValueWrapper> {
+    fn translate_icmp(&mut self, cmp: IntCC, lhs: Expr, rhs: Expr) -> anyhow::Result<ValueWrapper> {
         match cmp {
             IntCC::Equal | IntCC::NotEqual => {
-                let lhs = self.translate_expr(*lhs)?;
-                let rhs = self.translate_expr(*rhs)?;
+                let lhs = self.translate_expr(lhs)?;
+                let rhs = self.translate_expr(rhs)?;
                 Ok(ValueWrapper::new(
                     self.builder.ins().icmp(cmp, lhs.value, rhs.value),
                     INT,

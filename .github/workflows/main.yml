@@ -33,6 +33,7 @@ jobs:
       - run: rustup update nightly
       - run: cargo +nightly bench --all-features -p variant-config
       - run: cargo fmt --all -- --check
+      - run: cargo clippy --release
   codecov:
     runs-on: ubuntu-latest
     steps:

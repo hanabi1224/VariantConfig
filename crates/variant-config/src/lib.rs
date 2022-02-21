@@ -80,7 +80,7 @@ impl VariantConfigStore {
     }
 
     pub fn resolve(&self, variants: &HashMap<String, VariantValue>) -> serde_json::Value {
-        if variants.len() > 0 {
+        if !variants.is_empty() {
             let mut merged = HashMap::with_capacity(self.global_variants.len() + variants.len());
             for (k, v) in variants {
                 merged.insert(k.to_owned(), v.clone());

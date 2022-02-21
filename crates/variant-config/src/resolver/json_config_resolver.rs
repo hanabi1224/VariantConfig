@@ -52,7 +52,7 @@ impl JsonConfigResolver {
 
     pub fn resolve(&self, ctx: &HashMap<String, VariantValue>) -> Value {
         let mut ret = self.json.clone();
-        if self.node_resolvers.len() > 0 {
+        if !self.node_resolvers.is_empty() {
             for (path, resolvers) in self.node_resolvers.iter().rev() {
                 if let Some(ptr_mut) = ret.pointer_mut(path) {
                     let mut match_value = Value::Null;
@@ -82,7 +82,7 @@ impl JsonConfigResolver {
     fn parse_variants(&mut self, node: &Value, path: &mut Vec<String>) -> anyhow::Result<()> {
         match node {
             Value::Array(vec) => {
-                if vec.len() > 0 {
+                if !vec.is_empty() {
                     let is_variant_array = vec.iter().all(|i| self.is_variant_array(i));
                     let mut node_resolvers: Vec<NodeCandidateResolver>;
                     if is_variant_array {
@@ -96,7 +96,7 @@ impl JsonConfigResolver {
                             if let Some(v) = item.get(&self.condition_path) {
                                 match v {
                                     Value::String(on) => {
-                                        let r = NodeCandidateResolver::new(idx, &on)?;
+                                        let r = NodeCandidateResolver::new(idx, on)?;
                                         node_resolvers.push(r);
                                     }
                                     Value::Null => {
@@ -116,7 +116,7 @@ impl JsonConfigResolver {
                             }
 
                             path.push(format!("{}", idx));
-                            path.push(format!("{}", self.value_path));
+                            path.push(self.value_path.to_string());
                             self.parse_variants(value, path)?;
                             path.pop();
                             path.pop();
@@ -145,14 +145,12 @@ impl JsonConfigResolver {
     }
 
     fn is_variant_array(&self, v: &Value) -> bool {
-        if v.is_object() {
-            if let Some(_) = v.get(&self.value_path) {
-                if let Some(c) = v.get(&self.condition_path) {
-                    return !c.is_array() && !c.is_object();
-                }
+        if v.is_object() && v.get(&self.value_path).is_some() {
+            if let Some(c) = v.get(&self.condition_path) {
+                return !c.is_array() && !c.is_object();
             }
         }
-        return false;
+        false
     }
 
     fn get_keys(&self) -> Vec<String> {
@@ -174,6 +172,6 @@ impl Drop for JsonConfigResolver {
     }
 }
 
-fn merge_json_path(path: &Vec<String>) -> String {
+fn merge_json_path(path: &[String]) -> String {
     format!("/{}", path.join("/"))
 }
