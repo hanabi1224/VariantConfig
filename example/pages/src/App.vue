@@ -1,33 +1,53 @@
 <template>
-    <div class="main">
-        <div class="variants">
-            <h3>
-                Variants:
-                <select v-model="selectedVariant" @change="onVariantsChange">
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
-            </h3>
-            <div ref="variants"></div>
-        </div>
-        <div class="editor">
-            <h3>
-                Editor:
-                <select v-model="mode" @change="onModeChange">
-                    <option value="yaml">yaml</option>
-                    <option value="toml">toml</option>
-                    <option value="json">json</option>
-                </select>
-            </h3>
-            <div ref="editor"></div>
-        </div>
-        <div class="result">
-            <h3>Result:</h3>
-            <div ref="result"></div>
-        </div>
+  <div class="main">
+    <div class="variants">
+      <h3>
+        Variants:
+        <select
+          v-model="selectedVariant"
+          @change="onVariantsChange"
+        >
+          <option value="0">
+            0
+          </option>
+          <option value="1">
+            1
+          </option>
+          <option value="2">
+            2
+          </option>
+          <option value="3">
+            3
+          </option>
+        </select>
+      </h3>
+      <div ref="variants"></div>
     </div>
+    <div class="editor">
+      <h3>
+        Editor:
+        <select
+          v-model="mode"
+          @change="onModeChange"
+        >
+          <option value="yaml">
+            yaml
+          </option>
+          <option value="toml">
+            toml
+          </option>
+          <option value="json">
+            json
+          </option>
+        </select>
+      </h3>
+      <div ref="editor"></div>
+    </div>
+    <div class="result">
+      <h3>Result:</h3>
+      <div ref="result"></div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -81,7 +101,7 @@ export default class AppPage extends Vue {
         this.setDefault(this.mode);
     }
 
-    setDefault(mode: Models) {
+    setDefault(mode: Modes) {
         this.setMode(mode);
         let t = '';
         switch (mode) {
