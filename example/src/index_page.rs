@@ -6,7 +6,7 @@ type IndexPageResult = Either<HttpResponse, NamedFile>;
 
 pub async fn index(req: HttpRequest) -> Result<IndexPageResult> {
     let mut filename = req.match_info().query("filename");
-    if filename.len() == 0 {
+    if filename.is_empty() {
         filename = "index.html"
     }
     let path: PathBuf = format!("pages/dist/{}", filename).parse()?;

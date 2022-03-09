@@ -57,7 +57,7 @@ mod tests {
 
         store.update_global_variants(HashMap::with_capacity(0));
         store
-            .update_json_with_config(json.clone(), &VariantConfigStoreConfig::default())
+            .update_json_with_config(json, &VariantConfigStoreConfig::default())
             .unwrap();
         let mut variants = HashMap::new();
         variants.insert("VAR1".to_owned(), VariantValue::Int(10));

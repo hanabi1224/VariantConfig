@@ -50,7 +50,7 @@ pub struct FnJitter {
 
 impl FnJitter {
     pub fn new(input: &str) -> anyhow::Result<Self> {
-        let builder = JITBuilder::new(cranelift_module::default_libcall_names());
+        let builder = JITBuilder::new(cranelift_module::default_libcall_names())?;
         let mut module = JITModule::new(builder);
         let mut ctx = module.make_context();
         let random_state = RandomState::new();
@@ -113,14 +113,7 @@ impl FnJitter {
         let id = module
             .declare_function("fn", Linkage::Export, &ctx.func.signature)
             .map_err(|e| e)?;
-        module
-            .define_function(
-                id,
-                ctx,
-                &mut codegen::binemit::NullTrapSink {},
-                &mut codegen::binemit::NullStackMapSink {},
-            )
-            .map_err(|e| e)?;
+        module.define_function(id, ctx).map_err(|e| e)?;
         module.clear_context(ctx);
         module.finalize_definitions();
         let code = module.get_finalized_function(id);

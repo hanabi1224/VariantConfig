@@ -26,7 +26,7 @@ mod tests {
                 },
             ]
         });
-        let resolver = JsonConfigResolver::new(json.clone()).unwrap();
+        let resolver = JsonConfigResolver::new(json).unwrap();
         let ctx = HashMap::new();
         let r = resolver.resolve(&ctx);
         assert_eq!(
@@ -47,7 +47,7 @@ mod tests {
                 },
             ]
         });
-        let resolver = JsonConfigResolver::new(json.clone()).unwrap();
+        let resolver = JsonConfigResolver::new(json).unwrap();
         let ctx = HashMap::new();
         let r = resolver.resolve(&ctx);
         assert_eq!(
@@ -68,7 +68,7 @@ mod tests {
                 },
             ]
         });
-        let resolver = JsonConfigResolver::new(json.clone()).unwrap();
+        let resolver = JsonConfigResolver::new(json).unwrap();
         let ctx = HashMap::new();
         let r = resolver.resolve(&ctx);
         assert_eq!(
@@ -98,7 +98,7 @@ mod tests {
                 },
             ]
         });
-        let resolver = JsonConfigResolver::new(json.clone()).unwrap();
+        let resolver = JsonConfigResolver::new(json).unwrap();
         let mut ctx = HashMap::new();
         ctx.insert("a".to_owned(), VariantValue::Int(6));
         let r = resolver.resolve(&ctx);
@@ -170,7 +170,7 @@ mod tests {
                 },
             ]
         });
-        let resolver = JsonConfigResolver::new(json.clone()).unwrap();
+        let resolver = JsonConfigResolver::new(json).unwrap();
         let mut ctx = HashMap::new();
         ctx.insert("a".to_owned(), VariantValue::Int(6));
         ctx.insert("b".to_owned(), VariantValue::String("what".to_owned()));

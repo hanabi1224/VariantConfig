@@ -84,12 +84,11 @@ impl JsonConfigResolver {
             Value::Array(vec) => {
                 if !vec.is_empty() {
                     let is_variant_array = vec.iter().all(|i| self.is_variant_array(i));
-                    let mut node_resolvers: Vec<NodeCandidateResolver>;
-                    if is_variant_array {
-                        node_resolvers = Vec::with_capacity(vec.len());
+                    let mut node_resolvers = if is_variant_array {
+                        Vec::with_capacity(vec.len())
                     } else {
-                        node_resolvers = Vec::with_capacity(0);
-                    }
+                        Vec::with_capacity(0)
+                    };
                     for (idx, item) in vec.iter().enumerate() {
                         if is_variant_array {
                             let value = item.get(&self.value_path).unwrap();

@@ -5,16 +5,15 @@ license = "MIT"
 name = "variant-config"
 repository = "https://github.com/hanabi1224/VariantConfig"
 version = "0.1.4"
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
 
 [dependencies]
 ahash = "0.7"
 anyhow = "1"
-cranelift = "0.80"
-cranelift-jit = "0.80"
-cranelift-module = "0.80"
+cranelift = "0.82"
+cranelift-jit = "0.82"
+cranelift-module = "0.82"
 crossbeam-channel = "0.5"
 hashbrown = "0.12"
 log = "0.4"
@@ -27,6 +26,7 @@ serde_yaml = "0.8"
 toml = "0.5"
 
 [dev-dependencies]
+criterion = {version = "0.3", features = ["html_reports"]}
 # bson = "1"
 
 [build-dependencies]
@@ -34,3 +34,7 @@ toml = "0.5"
 
 [lib]
 crate-type = ["lib", "cdylib"]
+
+[[bench]]
+harness = false
+name = "benchmarks"
