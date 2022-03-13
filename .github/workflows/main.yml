@@ -33,7 +33,7 @@ jobs:
       - run: rustup update nightly
       - run: cargo +nightly bench --all-features -p variant-config
       - run: cargo fmt --all -- --check
-      - run: cargo clippy --release
+      - run: cargo clippy --release --all-features -- --deny warnings
   codecov:
     runs-on: ubuntu-latest
     steps:
@@ -44,14 +44,8 @@ jobs:
           toolchain: nightly
           override: true
           components: llvm-tools-preview
-      - run: curl -L https://github.com/mozilla/grcov/releases/latest/download/grcov-linux-x86_64.tar.bz2 | tar jxf -
-      - name: Run code coverage
-        env:
-          RUSTFLAGS: -Zinstrument-coverage
-          LLVM_PROFILE_FILE: coverage-%p-%m.profraw
-        run: |
-          cargo test --all-features --workspace --exclude web-example
-          ./grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info
+      - uses: taiki-e/install-action@cargo-llvm-cov
+      - run: cargo llvm-cov --all-features --lcov --output-path lcov.info
       - uses: actions/upload-artifact@v2
         with:
           name: lcov.info

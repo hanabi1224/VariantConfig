@@ -8,8 +8,8 @@ version = "0.1.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-actix-files = "0.5"
-actix-web = "3"
+actix-files = "0.6"
+actix-web = "4"
 # openssl = "0"
 serde = {version = "1", features = ["derive"]}
 variant-config = {path = "../crates/variant-config"}

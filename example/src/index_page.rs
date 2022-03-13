@@ -11,12 +11,12 @@ pub async fn index(req: HttpRequest) -> Result<IndexPageResult> {
     }
     let path: PathBuf = format!("pages/dist/{}", filename).parse()?;
     if !path.exists() {
-        Ok(IndexPageResult::A(
+        Ok(IndexPageResult::Left(
             HttpResponse::MovedPermanently()
-                .header("Location", "/")
+                .append_header(("Location", "/"))
                 .body(""),
         ))
     } else {
-        Ok(IndexPageResult::B(NamedFile::open(path)?))
+        Ok(IndexPageResult::Right(NamedFile::open(path)?))
     }
 }
