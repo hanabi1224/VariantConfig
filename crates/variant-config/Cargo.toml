@@ -11,14 +11,12 @@ version = "0.1.4"
 [dependencies]
 ahash = "0.7"
 anyhow = "1"
-cranelift = "0.82"
-cranelift-jit = "0.82"
-cranelift-module = "0.82"
+cranelift = "0.83"
+cranelift-jit = "0.83"
+cranelift-module = "0.83"
 hashbrown = "0.12"
 log = "0.4"
-# notify = "5.0.0-pre.6"
 peg = "0.8"
-# protobuf = {version = "2", features = ["with-bytes"]}
 serde = {version = "1", features = ["derive"]}
 serde_json = "1"
 serde_yaml = "0.8.23"
@@ -26,10 +24,6 @@ toml = "0.5"
 
 [dev-dependencies]
 criterion = {version = "0.3", features = ["html_reports"]}
-# bson = "1"
-
-[build-dependencies]
-# protobuf-codegen-pure = "2"
 
 [lib]
 crate-type = ["lib", "cdylib"]
