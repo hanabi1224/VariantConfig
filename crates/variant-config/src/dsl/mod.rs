@@ -88,7 +88,7 @@ impl FnJitter {
         random_state: &RandomState,
         params: &mut HashMap<String, Variable>,
     ) -> anyhow::Result<*const u8> {
-        let stmts = parser::statements(input).map_err(|e| e)?;
+        let stmts = parser::statements(input)?;
         for _ in 0..N_PARAMS {
             ctx.func.signature.params.push(AbiParam::new(INT));
         }
@@ -110,10 +110,8 @@ impl FnJitter {
         return_value = trans.convert_int_to_bool(return_value);
         trans.return_and_finalize(return_value.value);
 
-        let id = module
-            .declare_function("fn", Linkage::Export, &ctx.func.signature)
-            .map_err(|e| e)?;
-        module.define_function(id, ctx).map_err(|e| e)?;
+        let id = module.declare_function("fn", Linkage::Export, &ctx.func.signature)?;
+        module.define_function(id, ctx)?;
         module.clear_context(ctx);
         module.finalize_definitions();
         let code = module.get_finalized_function(id);

@@ -11,7 +11,7 @@ version = "0.1.0"
 anyhow = "1"
 reqwest = "0.11"
 serde = {version = "1", features = ["derive"]}
-variant-config = "0.1"
+variant-config = {git = "https://github.com/hanabi1224/VariantConfig", branch = "main"}
 vercel_lambda = {git = "https://github.com/hanabi1224/rust", branch = "update_lambda_runtime_deps"}
 
 [dev-dependencies]
