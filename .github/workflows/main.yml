@@ -1,6 +1,7 @@
 name: main
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
   pull_request:
@@ -15,13 +16,13 @@ jobs:
         # os: [ubuntu-latest, windows-latest, macos-latest]
         os: [ubuntu-latest]
     steps:
-      - uses: actions/checkout@v2
-      - name: Cache cargo
-        uses: actions/cache@v2
+      - uses: actions/checkout@v3
+      - name: Setup sccache
+        uses: hanabi1224/sccache-action@v1.2.0
         with:
-          path: |
-            ~/.cargo/registry
-          key: ${{ runner.os }}-cargo
+          release-name: v0.3.1
+          cache-key: ${{ runner.os }}-sccache-build
+          cache-update: ${{ github.event_name != 'pull_request' }}
       - name: Install latest stable
         uses: actions-rs/toolchain@v1
         with:
@@ -36,7 +37,13 @@ jobs:
   codecov:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: Setup sccache
+        uses: hanabi1224/sccache-action@v1.2.0
+        with:
+          release-name: v0.3.1
+          cache-key: ${{ runner.os }}-sccache-codecov
+          cache-update: ${{ github.event_name != 'pull_request' }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -45,7 +52,7 @@ jobs:
           components: llvm-tools-preview
       - uses: taiki-e/install-action@cargo-llvm-cov
       - run: cargo llvm-cov --all-features --lcov --output-path lcov.info
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: lcov.info
           path: lcov.info

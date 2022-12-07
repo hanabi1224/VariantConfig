@@ -11,9 +11,6 @@ fn main() -> anyhow::Result<()> {
         .current_dir(cwd)
         .spawn()
         .expect("yarn failed");
-    Command::new(cmd)
-        .args(&["build"])
-        .current_dir(cwd)
-        .spawn()?;
+    Command::new(cmd).args(["build"]).current_dir(cwd).spawn()?;
     Ok(())
 }

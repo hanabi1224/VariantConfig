@@ -1,6 +1,7 @@
 name: example
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
   pull_request:
@@ -15,19 +16,13 @@ jobs:
         # os: [ubuntu-latest, windows-latest, macos-latest]
         os: [ubuntu-latest]
     steps:
-      - uses: actions/checkout@v2
-      - name: Cache cargo
-        uses: actions/cache@v2
+      - uses: actions/checkout@v3
+      - name: Setup sccache
+        uses: hanabi1224/sccache-action@v1.2.0
         with:
-          path: |
-            ~/.cargo/registry
-          key: ${{ runner.os }}-cargo
-      - name: Cache cargo build targets
-        uses: actions/cache@v2
-        with:
-          path: |
-            target
-          key: ${{ runner.os }}-cargo-build-target
+          release-name: v0.3.1
+          cache-key: ${{ runner.os }}-sccache-example
+          cache-update: ${{ github.event_name != 'pull_request' }}
       - name: Install latest stable
         uses: actions-rs/toolchain@v1
         with:
