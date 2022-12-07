@@ -16,18 +16,7 @@ jobs:
         os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v2
-      - name: Cache cargo
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-          key: ${{ runner.os }}-cargo
-      - name: Cache cargo build targets
-        uses: actions/cache@v2
-        with:
-          path: |
-            target
-          key: ${{ runner.os }}-cargo-build-target
+      - uses: Swatinem/rust-cache@v2
       - name: Install latest stable
         uses: actions-rs/toolchain@v1
         with:
