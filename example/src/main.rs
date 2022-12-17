@@ -1,17 +1,29 @@
 mod convert_api;
-mod index_page;
+// mod index_page;
 
-use actix_web::*;
+use std::net::SocketAddr;
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
+use axum::{routing::post, Router};
+use axum_extra::routing::SpaRouter;
+
+#[tokio::main]
+async fn main() {
+    async_main().await.unwrap()
+}
+
+async fn async_main() -> anyhow::Result<()> {
     println!("Open http://localhost:8080/ in browser.");
-    HttpServer::new(|| {
-        App::new()
-            .route("/api/convert/", web::post().to(convert_api::convert))
-            .route("/{filename:.*}", web::get().to(index_page::index))
-    })
-    .bind("0.0.0.0:8080")?
-    .run()
-    .await
+
+    let app = Router::new()
+        .route("/api/convert/", post(convert_api::convert))
+        .merge(SpaRouter::new("/", "pages/dist/"));
+    serve(app, 8080).await
+}
+
+async fn serve(app: Router, port: u16) -> anyhow::Result<()> {
+    let addr = SocketAddr::from(([127, 0, 0, 1], port));
+    axum::Server::bind(&addr)
+        .serve(app.into_make_service())
+        .await?;
+    Ok(())
 }

@@ -20,7 +20,7 @@ jobs:
       - name: Setup sccache
         uses: hanabi1224/sccache-action@v1.2.0
         with:
-          release-name: v0.3.1
+          release-name: v0.3.3
           cache-key: ${{ runner.os }}-sccache-build
           cache-update: ${{ github.event_name != 'pull_request' }}
       - name: Install latest stable
@@ -41,7 +41,7 @@ jobs:
       - name: Setup sccache
         uses: hanabi1224/sccache-action@v1.2.0
         with:
-          release-name: v0.3.1
+          release-name: v0.3.3
           cache-key: ${{ runner.os }}-sccache-codecov
           cache-update: ${{ github.event_name != 'pull_request' }}
       - uses: actions-rs/toolchain@v1

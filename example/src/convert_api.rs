@@ -1,4 +1,4 @@
-use actix_web::*;
+use axum::response::IntoResponse;
 use serde::{Deserialize, Serialize};
 use variant_config::{hashbrown::HashMap, *};
 
@@ -9,7 +9,11 @@ pub struct ConvertPayload {
     pub type_: String,
 }
 
-pub async fn convert(payload: web::Json<ConvertPayload>) -> Result<HttpResponse> {
+pub async fn convert(payload: axum::Json<ConvertPayload>) -> impl IntoResponse {
+    convert_inner(payload).await.unwrap()
+}
+
+async fn convert_inner(payload: axum::Json<ConvertPayload>) -> anyhow::Result<impl IntoResponse> {
     let mut variants = HashMap::new();
     let json: serde_json::Value = serde_json::from_str(&payload.variants)?;
     if let Some(object) = json.as_object() {
@@ -49,5 +53,5 @@ pub async fn convert(payload: web::Json<ConvertPayload>) -> Result<HttpResponse>
         format!("{}", ret)
     };
 
-    Ok(HttpResponse::Ok().content_type("text/plain").body(ret_str))
+    Ok(ret_str)
 }
