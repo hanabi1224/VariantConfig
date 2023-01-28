@@ -1,5 +1,4 @@
 mod convert_api;
-// mod index_page;
 
 use std::net::SocketAddr;
 
@@ -12,12 +11,13 @@ async fn main() {
 }
 
 async fn async_main() -> anyhow::Result<()> {
-    println!("Open http://localhost:8080/ in browser.");
+    let port = 8080;
+    println!("Open http://localhost:{port}/ in browser.");
 
     let app = Router::new()
         .route("/api/convert/", post(convert_api::convert))
         .merge(SpaRouter::new("/", "pages/dist/"));
-    serve(app, 8080).await
+    serve(app, port).await
 }
 
 async fn serve(app: Router, port: u16) -> anyhow::Result<()> {

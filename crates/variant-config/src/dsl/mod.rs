@@ -56,9 +56,7 @@ impl FnJitter {
         let random_state = RandomState::new();
         let mut params = HashMap::with_capacity(N_PARAMS);
         let fn_ptr = Self::compile(input, &mut module, &mut ctx, &random_state, &mut params)
-            .map_err(|e| {
-                anyhow::anyhow!(format!("Unable to parse condition `{}` :{}", input, e))
-            })?;
+            .map_err(|e| anyhow::anyhow!(format!("Unable to parse condition `{input}` :{e}")))?;
         Ok(Self {
             module,
             random_state,

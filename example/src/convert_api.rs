@@ -20,12 +20,12 @@ async fn convert_inner(payload: axum::Json<ConvertPayload>) -> anyhow::Result<im
         for (k, v) in object {
             let variant_value = match v {
                 serde_json::Value::String(s) => VariantValue::String(s.clone()),
-                serde_json::Value::Bool(b) => VariantValue::String(format!("{}", b)),
+                serde_json::Value::Bool(b) => VariantValue::String(format!("{b}")),
                 serde_json::Value::Number(n) => {
                     if let Some(int) = n.as_i64() {
                         VariantValue::Int(int)
                     } else {
-                        VariantValue::String(format!("{}", n))
+                        VariantValue::String(format!("{n}"))
                     }
                 }
                 _ => continue,
@@ -45,12 +45,12 @@ async fn convert_inner(payload: axum::Json<ConvertPayload>) -> anyhow::Result<im
         let ret = store.resolve(&HashMap::with_capacity(0));
         // format!("{}", ret)
         let toml = serde_json::from_value::<toml::Value>(ret)?;
-        format!("{}", toml)
+        format!("{toml}")
     } else {
         let value = serde_json::from_str(&payload.content)?;
         let store = VariantConfigStore::new(value, variants).unwrap();
         let ret = store.resolve(&HashMap::with_capacity(0));
-        format!("{}", ret)
+        format!("{ret}")
     };
 
     Ok(ret_str)

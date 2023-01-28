@@ -114,13 +114,13 @@ impl JsonConfigResolver {
                                 }
                             }
 
-                            path.push(format!("{}", idx));
+                            path.push(format!("{idx}"));
                             path.push(self.value_path.to_string());
                             self.parse_variants(value, path)?;
                             path.pop();
                             path.pop();
                         } else {
-                            path.push(format!("{}", idx));
+                            path.push(format!("{idx}"));
                             self.parse_variants(item, path)?;
                             path.pop();
                         }
