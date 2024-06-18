@@ -1,3 +1,5 @@
+#![allow(clippy::arc_with_non_send_sync)]
+
 pub mod dsl;
 mod resolver;
 mod vc_config;
@@ -15,6 +17,7 @@ use std::sync::Arc;
 pub use toml;
 pub use vc_config::*;
 
+#[derive(Clone)]
 pub struct VariantConfigStore {
     resolver: Arc<JsonConfigResolver>,
     pub global_variants: Arc<HashMap<String, VariantValue>>,

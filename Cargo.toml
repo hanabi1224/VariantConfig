@@ -1,7 +1,8 @@
 [workspace]
+resolver = "2"
 exclude = []
 members = [
   "example",
   "crates/variant-config",
-  "example/pages/api",
+  "example/pages",
 ]

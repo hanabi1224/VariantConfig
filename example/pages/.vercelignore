@@ -3,4 +3,4 @@ dist
 .cache
 .parcel-cache
 .vercel
-api/target
+target

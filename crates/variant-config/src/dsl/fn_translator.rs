@@ -43,8 +43,8 @@ impl<'a> FunctionTranslator<'a> {
         if v.r#type == BOOL {
             v
         } else {
-            let return_true = self.builder.ins().bconst(BOOL, true);
-            let return_false = self.builder.ins().bconst(BOOL, false);
+            let return_true = self.builder.ins().iconst(BOOL, 1);
+            let return_false = self.builder.ins().iconst(BOOL, 0);
             ValueWrapper::new(
                 self.builder
                     .ins()
@@ -76,7 +76,7 @@ impl<'a> FunctionTranslator<'a> {
             )),
 
             Expr::BoolLiteral(literal) => Ok(ValueWrapper::new(
-                self.builder.ins().bconst(BOOL, literal),
+                self.builder.ins().iconst(BOOL, if literal { 1 } else { 0 }),
                 BOOL,
             )),
 
@@ -194,8 +194,7 @@ impl<'a> FunctionTranslator<'a> {
         }
     }
 
-    pub fn return_and_finalize(&mut self, ret: Value) {
+    pub fn return_(self, ret: Value) {
         self.builder.ins().return_(&[ret]);
-        self.builder.finalize();
     }
 }

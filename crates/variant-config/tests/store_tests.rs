@@ -51,8 +51,8 @@ mod tests {
         variants.insert("VAR2".to_owned(), VariantValue::String("why".to_owned()));
         let config = store.resolve_typed::<Config>(&variants).unwrap();
         let mut expected = Config::expected_base();
-        expected.p3.p4 = "p41".to_owned();
-        expected.p3.p5 = "why".to_owned();
+        "p41".clone_into(&mut expected.p3.p4);
+        "why".clone_into(&mut expected.p3.p5);
         assert_eq!(config, expected);
 
         store.update_global_variants(HashMap::with_capacity(0));
@@ -64,8 +64,8 @@ mod tests {
         variants.insert("VAR2".to_owned(), VariantValue::String("why".to_owned()));
         let config = store.resolve_typed::<Config>(&variants).unwrap();
         let mut expected = Config::expected_base();
-        expected.p3.p4 = "p41".to_owned();
-        expected.p3.p5 = "why".to_owned();
+        "p41".clone_into(&mut expected.p3.p4);
+        "why".clone_into(&mut expected.p3.p5);
         assert_eq!(config, expected);
     }
 
@@ -91,24 +91,24 @@ mod tests {
         variants.insert("VAR2".to_owned(), VariantValue::String("what".to_owned()));
         let config = store.resolve_typed::<Config>(&variants).unwrap();
         let mut expected = Config::expected_base();
-        expected.p3.p4 = "p41".to_owned();
-        expected.p3.p5 = "what".to_owned();
+        "p41".clone_into(&mut expected.p3.p4);
+        "what".clone_into(&mut expected.p3.p5);
         assert_eq!(config, expected);
 
         variants.insert("VAR1".to_owned(), VariantValue::Int(100));
         variants.insert("VAR2".to_owned(), VariantValue::String("why".to_owned()));
         let config = store.resolve_typed::<Config>(&variants).unwrap();
         let mut expected = Config::expected_base();
-        expected.p3.p4 = "p41".to_owned();
-        expected.p3.p5 = "why".to_owned();
+        "p41".clone_into(&mut expected.p3.p4);
+        "why".clone_into(&mut expected.p3.p5);
         assert_eq!(config, expected);
 
         variants.insert("VAR1".to_owned(), VariantValue::Int(100));
         variants.insert("VAR2".to_owned(), VariantValue::String("how".to_owned()));
         let config = store.resolve_typed::<Config>(&variants).unwrap();
         let mut expected = Config::expected_base();
-        expected.p3.p4 = "p41".to_owned();
-        expected.p3.p5 = "how".to_owned();
+        "p41".clone_into(&mut expected.p3.p4);
+        "how".clone_into(&mut expected.p3.p5);
         assert_eq!(config, expected);
 
         variants.insert("VAR1".to_owned(), VariantValue::Int(100));
@@ -118,8 +118,8 @@ mod tests {
         );
         let config = store.resolve_typed::<Config>(&variants).unwrap();
         let mut expected = Config::expected_base();
-        expected.p3.p4 = "p41".to_owned();
-        expected.p3.p5 = "".to_owned();
+        "p41".clone_into(&mut expected.p3.p4);
+        "".clone_into(&mut expected.p3.p5);
         assert_eq!(config, expected);
 
         variants.insert("VAR1".to_owned(), VariantValue::Int(10));
@@ -129,8 +129,8 @@ mod tests {
         );
         let config = store.resolve_typed::<Config>(&variants).unwrap();
         let mut expected = Config::expected_base();
-        expected.p3.p4 = "p42".to_owned();
-        expected.p3.p5 = "no".to_owned();
+        "p42".clone_into(&mut expected.p3.p4);
+        "no".clone_into(&mut expected.p3.p5);
         assert_eq!(config, expected);
     }
 }

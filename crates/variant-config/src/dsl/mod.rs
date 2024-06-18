@@ -38,7 +38,7 @@ pub type FnSignature = fn(
     i64,
     i64,
 ) -> bool;
-pub const BOOL: Type = types::B1;
+pub const BOOL: Type = types::I8;
 pub const INT: Type = types::I64;
 
 pub struct FnJitter {
@@ -61,7 +61,7 @@ impl FnJitter {
             module,
             random_state,
             params,
-            func: unsafe { mem::transmute::<_, FnSignature>(fn_ptr) },
+            func: unsafe { mem::transmute::<*const u8, FnSignature>(fn_ptr) },
         })
     }
 
@@ -100,18 +100,18 @@ impl FnJitter {
         builder.switch_to_block(entry_block);
         builder.seal_block(entry_block);
 
-        let mut return_value = ValueWrapper::new(builder.ins().bconst(BOOL, false), BOOL);
+        let mut return_value = ValueWrapper::new(builder.ins().iconst(BOOL, 0), BOOL);
         let mut trans = FunctionTranslator::new(random_state, &mut builder, params, entry_block);
         for expr in stmts {
             return_value = trans.translate_expr(expr)?;
         }
         return_value = trans.convert_int_to_bool(return_value);
-        trans.return_and_finalize(return_value.value);
+        trans.return_(return_value.value);
 
         let id = module.declare_function("fn", Linkage::Export, &ctx.func.signature)?;
         module.define_function(id, ctx)?;
         module.clear_context(ctx);
-        module.finalize_definitions();
+        module.finalize_definitions()?;
         let code = module.get_finalized_function(id);
         Ok(code)
     }

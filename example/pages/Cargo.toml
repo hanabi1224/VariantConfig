@@ -9,11 +9,18 @@ version = "0.1.0"
 
 [dependencies]
 anyhow = "1"
-reqwest = "0.11"
+reqwest = "0.12"
 serde = {version = "1", features = ["derive"]}
+tokio = {version = "1", features = ["macros", "rt-multi-thread"]}
 variant-config = {git = "https://github.com/hanabi1224/VariantConfig", branch = "main"}
-vercel_lambda = {git = "https://github.com/hanabi1224/rust", branch = "update_lambda_runtime_deps"}
+vercel_runtime = "1"
 
 [dev-dependencies]
 
-[lib]
+[[bin]]
+name = "ip"
+path = "api/ip.rs"
+
+[[bin]]
+name = "convert"
+path = "api/convert.rs"
