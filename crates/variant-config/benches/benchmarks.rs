@@ -1,5 +1,6 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
 use std::fs;
+use std::hint::black_box;
 use variant_config::{dsl::VariantValue, hashbrown::HashMap, *};
 
 fn criterion_benchmark(c: &mut Criterion) {

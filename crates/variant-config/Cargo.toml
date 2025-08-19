@@ -11,19 +11,19 @@ version = "0.2.0"
 [dependencies]
 ahash = "0.8"
 anyhow = "1"
-cranelift = "0.111"
-cranelift-jit = "0.111"
-cranelift-module = "0.111"
+cranelift = "0.122"
+cranelift-jit = "0.122"
+cranelift-module = "0.122"
 hashbrown = "0.15"
 log = "0.4"
 peg = "0.8"
 serde = {version = "1", features = ["derive"]}
 serde_json = "1"
 serde_yaml = "0.9"
-toml = "0.8"
+toml = "0.9"
 
 [dev-dependencies]
-criterion = {version = "0.5", features = ["html_reports"]}
+criterion = {version = "0.7", features = ["html_reports"]}
 
 [lib]
 crate-type = ["lib", "cdylib"]

@@ -16,7 +16,7 @@ async fn async_main() -> anyhow::Result<()> {
 
     let app = Router::new()
         .route("/api/convert/", post(convert_api::convert))
-        .nest_service("/", ServeDir::new("pages/dist/"));
+        .fallback_service(ServeDir::new("pages/dist/"));
     serve(app, port).await
 }
 

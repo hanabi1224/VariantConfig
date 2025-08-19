@@ -82,10 +82,7 @@ impl<'a> FunctionTranslator<'a> {
 
             Expr::StringLiteral(literal) => {
                 let hash = get_string_hash(self.random_state, &literal);
-                Ok(ValueWrapper::new(
-                    self.builder.ins().iconst(INT, hash),
-                    types::R64,
-                ))
+                Ok(ValueWrapper::new(self.builder.ins().iconst(INT, hash), INT))
             }
 
             Expr::Add(lhs, rhs) => {
@@ -162,9 +159,8 @@ impl<'a> FunctionTranslator<'a> {
                     Ok(ValueWrapper::new(self.builder.use_var(variable), INT))
                 } else {
                     let idx = self.variables.len();
-                    let var = Variable::new(idx);
+                    let var = self.builder.declare_var(INT);
                     self.variables.insert(name, var);
-                    self.builder.declare_var(var, INT);
                     let val = self.builder.block_params(self.entry_block)[idx];
                     self.builder.def_var(var, val);
                     Ok(ValueWrapper::new(val, INT))

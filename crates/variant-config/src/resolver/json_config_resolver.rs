@@ -162,7 +162,7 @@ impl Drop for JsonConfigResolver {
         for k in self.get_keys() {
             if let Some(v) = self.node_resolvers.remove(&k) {
                 let mut vec = v.borrow_mut();
-                while vec.len() > 0 {
+                while !vec.is_empty() {
                     let r = vec.remove(0);
                     unsafe { r.free_memory() };
                 }
