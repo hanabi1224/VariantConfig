@@ -144,12 +144,14 @@ impl JsonConfigResolver {
     }
 
     fn is_variant_array(&self, v: &Value) -> bool {
-        if v.is_object() && v.get(&self.value_path).is_some() {
-            if let Some(c) = v.get(&self.condition_path) {
-                return !c.is_array() && !c.is_object();
-            }
+        if v.is_object()
+            && v.get(&self.value_path).is_some()
+            && let Some(c) = v.get(&self.condition_path)
+        {
+            !c.is_array() && !c.is_object()
+        } else {
+            false
         }
-        false
     }
 
     fn get_keys(&self) -> Vec<String> {

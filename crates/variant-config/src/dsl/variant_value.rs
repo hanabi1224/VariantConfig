@@ -1,5 +1,5 @@
-use super::utils::get_string_hash;
 use super::RandomState;
+use super::utils::get_string_hash;
 
 #[derive(Debug, Clone)]
 pub enum VariantValue {

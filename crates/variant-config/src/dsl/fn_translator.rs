@@ -1,7 +1,7 @@
-use super::frontend::*;
-use super::utils::get_string_hash;
 use super::HashMap;
 use super::RandomState;
+use super::frontend::*;
+use super::utils::get_string_hash;
 use super::{BOOL, INT};
 use anyhow::bail;
 use cranelift::prelude::*;

@@ -116,7 +116,7 @@ impl FnJitter {
         Ok(code)
     }
 
-    pub(crate) unsafe fn free_memory(self) {
-        self.module.free_memory();
+    pub(crate) fn free_memory(self) {
+        unsafe { self.module.free_memory() };
     }
 }

@@ -1,6 +1,6 @@
 [package]
 description = "variant config"
-edition = "2021"
+edition = "2024"
 license = "MIT"
 name = "variant-config"
 repository = "https://github.com/hanabi1224/VariantConfig"
